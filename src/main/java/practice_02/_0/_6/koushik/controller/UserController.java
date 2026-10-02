@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.*;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
 import practice_02._0._6.koushik.service.UserService;
-
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 @RestController
