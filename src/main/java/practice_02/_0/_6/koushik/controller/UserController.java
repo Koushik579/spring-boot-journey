@@ -26,18 +26,18 @@ public class UserController {
         return service.saveUser(entity);
     }
 
-    @PostMapping("/update")
-    public String updateUserById(@RequestParam long id, @RequestBody String name){
+    @PostMapping("/update/{id}")
+    public String updateUserById(@PathVariable long id, @RequestParam String name){
         return service.updateUser(id, name);
     }
 
-    @GetMapping("/searchUser")
-    public UserResponseDTO findUserById(@RequestParam long id){
+    @GetMapping("/searchUser/{id}")
+    public UserResponseDTO findUserById(@PathVariable long id){
         return service.searchUserById(id);
     }
 
-    @DeleteMapping("delUser")
-    public String deleteUser(@RequestParam long id){
+    @DeleteMapping("delUser/{id}")
+    public String deleteUser(@PathVariable long id){
         return service.deleteUser(id);
     }
 

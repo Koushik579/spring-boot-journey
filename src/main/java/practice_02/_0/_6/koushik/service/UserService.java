@@ -23,6 +23,7 @@ public class UserService {
         for(UserEntity user : userList){
             UserResponseDTO responseDTO = new UserResponseDTO();
             responseDTO.setName(user.getName());
+            responseDTO.setId(user.getId());
             users.add(responseDTO);
         }
         return users;
@@ -44,7 +45,6 @@ public class UserService {
         UserEntity entity = repository.findById(id).orElseThrow(() -> new RuntimeException("No User Found"));
         String oldName = entity.getName();
         entity.setName(name);
-        entity.setId(id);
         repository.save(entity);
         return "user updated from "+oldName+" to "+ name;
     }
