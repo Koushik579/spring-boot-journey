@@ -1,8 +1,12 @@
 package practice_02._0._6.koushik.service;
 
+import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
 import org.springframework.stereotype.Service;
 import practice_02._0._6.koushik.repository.UserReposiretory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -11,8 +15,44 @@ public class UserService {
         this.repository = repository;
     }
 
+
+
+    public List<UserResponseDTO> allUsers(){
+        List<UserEntity> userList= repository.findAll();
+        List<UserResponseDTO> users = new ArrayList<>();
+        for(UserEntity user : userList){
+            UserResponseDTO responseDTO = new UserResponseDTO();
+            responseDTO.setName(user.getName());
+            users.add(responseDTO);
+        }
+        return users;
+    }
+
     public String saveUser(UserEntity entity){
         repository.save(entity);
         return "user saved\n"+entity.getName()+"\n****Enjoy****";
     }
+
+    public UserResponseDTO searchUserById(Long id){
+        UserEntity entity = repository.findById(id).orElseThrow(() -> new RuntimeException("No User Found"));
+        UserResponseDTO responseDTO = new UserResponseDTO();
+        responseDTO.setName(entity.getName());
+        return responseDTO;
+    }
+
+    public String updateUser(long id, String name){
+        UserEntity entity = repository.findById(id).orElseThrow(() -> new RuntimeException("No User Found"));
+        String oldName = entity.getName();
+        entity.setName(name);
+        entity.setId(id);
+        repository.save(entity);
+        return "user updated from "+oldName+" to "+ name;
+    }
+
+    public String deleteUser(long id){
+        repository.findById(id).orElseThrow(() -> new RuntimeException("No User Found"));
+        repository.deleteById(id);
+        return "User deleted";
+    }
+
 }
