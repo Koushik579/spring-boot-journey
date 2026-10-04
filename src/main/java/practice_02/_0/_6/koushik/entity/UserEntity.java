@@ -4,15 +4,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "practice_user_table")
+@Table(name = "practicetb")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
+    @NotBlank(message = "Enter a valid name")
     private String name;
 
+    @NotBlank(message = "Enter a Valid Email Id")
+    private String email;
+
+    //Getter & Setter
     public long getId() {
         return id;
     }
@@ -27,5 +31,13 @@ public class UserEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

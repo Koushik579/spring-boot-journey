@@ -1,5 +1,6 @@
 package practice_02._0._6.koushik.service;
 
+import org.springframework.http.ResponseEntity;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,6 @@ public class UserService {
         for(UserEntity user : userList){
             UserResponseDTO responseDTO = new UserResponseDTO();
             responseDTO.setName(user.getName());
-            System.out.println(user.getId());
             responseDTO.setId(user.getId());
             users.add(responseDTO);
         }
@@ -49,7 +49,14 @@ public class UserService {
         String oldName = entity.getName();
         entity.setName(name);
         repository.save(entity);
-        return "user updated from "+oldName+" to "+ name;
+        return "User's name updated from to "+ name;
+    }
+    public String updateEmail(long id, String email){
+        UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
+        String oldName = entity.getEmail();
+        entity.setEmail(email);
+        repository.save(entity);
+        return "User's email updated to "+ email;
     }
 
     public String deleteUser(long id){

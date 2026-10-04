@@ -1,5 +1,7 @@
 package practice_02._0._6.koushik.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
@@ -20,12 +22,13 @@ public class UserController {
     }
 
     @PostMapping("/saveuser")
-    public String addUser(@RequestBody UserEntity entity){
-        return service.saveUser(entity);
+    public ResponseEntity<?> addUser(@Valid @RequestBody UserEntity entity){
+
+        return ResponseEntity.ok(service.saveUser(entity));
     }
 
     @PostMapping("/update/{id}")
-    public String updateUserById(@PathVariable long id, @RequestParam String name){
+    public String updateUserById(@PathVariable long id,@Valid @RequestParam String name){
         return service.updateUser(id, name);
     }
 
