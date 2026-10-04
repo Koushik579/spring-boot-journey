@@ -32,6 +32,11 @@ public class UserController {
         return service.updateUser(id, name);
     }
 
+    @PostMapping("/update/{id}")
+    public String updateEmailById(@PathVariable long id,@Valid @RequestParam String email){
+        return service.updateEmail(id, email);
+    }
+
     @GetMapping("/searchUser/{id}")
     public UserResponseDTO findUserById(@PathVariable long id){
         return service.searchUserById(id);

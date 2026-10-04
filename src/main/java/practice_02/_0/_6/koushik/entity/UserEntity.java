@@ -1,6 +1,7 @@
 package practice_02._0._6.koushik.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -13,6 +14,7 @@ public class UserEntity {
     @NotBlank(message = "Enter a valid name")
     private String name;
 
+    @Email
     @NotBlank(message = "Enter a Valid Email Id")
     private String email;
 
