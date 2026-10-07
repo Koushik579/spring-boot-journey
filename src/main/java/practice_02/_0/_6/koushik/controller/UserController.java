@@ -27,12 +27,12 @@ public class UserController {
         return ResponseEntity.ok(service.saveUser(entity));
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/updatename/{id}")
     public String updateUserById(@PathVariable long id,@Valid @RequestParam String name){
         return service.updateUser(id, name);
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/updateemail/{id}")
     public String updateEmailById(@PathVariable long id,@Valid @RequestParam String email){
         return service.updateEmail(id, email);
     }

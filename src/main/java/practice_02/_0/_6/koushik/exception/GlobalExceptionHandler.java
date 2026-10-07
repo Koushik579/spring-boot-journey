@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
@@ -20,16 +21,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponse> handleValidationError(MethodArgumentNotValidException ex){
+    public ResponseEntity<List<ValidationErrorResponse>> handleValidationError(MethodArgumentNotValidException ex){
         List<FieldError> error = ex.getBindingResult().getFieldErrors();
-        ValidationErrorResponse validationErrorResponse = null;
+        List<ValidationErrorResponse> errList = new ArrayList<>();
         for(FieldError err : error){
-            validationErrorResponse = new ValidationErrorResponse();
+            ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse();
             validationErrorResponse.setField(err.getField());
-            validationErrorResponse.setRejectedValue((String) err.getRejectedValue());
+            validationErrorResponse.setRejectedValue(err.getRejectedValue());
             validationErrorResponse.setMsg(err.getDefaultMessage());
+            errList.add(validationErrorResponse);
         }
-        return ResponseEntity.badRequest().body(validationErrorResponse);
+        return ResponseEntity.badRequest().body(errList);
     }
 
 }

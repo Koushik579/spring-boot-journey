@@ -26,6 +26,7 @@ public class UserService {
             UserResponseDTO responseDTO = new UserResponseDTO();
             responseDTO.setName(user.getName());
             responseDTO.setId(user.getId());
+            responseDTO.setEmail(user.getEmail());
             users.add(responseDTO);
         }
         return users;
@@ -46,14 +47,12 @@ public class UserService {
 
     public String updateUser(long id, String name){
         UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
-        String oldName = entity.getName();
         entity.setName(name);
         repository.save(entity);
         return "User's name updated from to "+ name;
     }
     public String updateEmail(long id, String email){
         UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
-        String oldName = entity.getEmail();
         entity.setEmail(email);
         repository.save(entity);
         return "User's email updated to "+ email;
