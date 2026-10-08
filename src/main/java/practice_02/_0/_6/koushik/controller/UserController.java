@@ -17,34 +17,37 @@ public class UserController {
     }
 
     @GetMapping("/allUsers")
-    public List<UserResponseDTO> getallUsers(){
-        return service.allUsers();
+    public ResponseEntity<List<UserResponseDTO>> getallUsers(){
+
+        return ResponseEntity.ok(service.allUsers());
     }
 
     @PostMapping("/saveuser")
     public ResponseEntity<?> addUser(@Valid @RequestBody UserEntity entity){
 
-        return ResponseEntity.ok(service.saveUser(entity));
+        return ResponseEntity.status(201).body(service.saveUser(entity));
     }
 
     @PostMapping("/updatename/{id}")
-    public String updateUserById(@PathVariable long id,@Valid @RequestParam String name){
-        return service.updateUser(id, name);
+    public ResponseEntity<String> updateUserById(@PathVariable long id,@Valid @RequestParam String name){
+        return ResponseEntity.status(200).body(service.updateUser(id, name));
     }
 
     @PostMapping("/updateemail/{id}")
-    public String updateEmailById(@PathVariable long id,@Valid @RequestParam String email){
-        return service.updateEmail(id, email);
+    public ResponseEntity<String> updateEmailById(@PathVariable long id,@Valid @RequestParam String email){
+        return ResponseEntity.ok(service.updateEmail(id, email));
     }
 
     @GetMapping("/searchUser/{id}")
-    public UserResponseDTO findUserById(@PathVariable long id){
-        return service.searchUserById(id);
+    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable long id){
+
+        return ResponseEntity.ok(service.searchUserById(id));
     }
 
     @DeleteMapping("delUser/{id}")
-    public String deleteUser(@PathVariable long id){
-        return service.deleteUser(id);
+    public ResponseEntity<String> deleteUser(@PathVariable long id){
+
+        return ResponseEntity.status(200).body(service.deleteUser(id));
     }
 
 }
