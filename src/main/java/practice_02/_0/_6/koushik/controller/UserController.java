@@ -25,7 +25,13 @@ public class UserController {
     @PostMapping("/saveuser")
     public ResponseEntity<UserResponseDTO> addUser(@Valid @RequestBody UserEntity entity){
 
-        return ResponseEntity.status(201).body(service.saveUser(entity));
+        UserResponseDTO savedUser = service.saveUser(entity);
+
+        return ResponseEntity
+                .status(201)
+                .header("Location",
+                        "http://localhost:8080/api//searchUser/"+savedUser.getId())
+                .body(savedUser);
     }
 
     @PostMapping("/updatename/{id}")
