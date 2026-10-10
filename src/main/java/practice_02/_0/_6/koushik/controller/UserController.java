@@ -23,14 +23,14 @@ public class UserController {
     }
 
     @PostMapping("/saveuser")
-    public ResponseEntity<?> addUser(@Valid @RequestBody UserEntity entity){
+    public ResponseEntity<UserResponseDTO> addUser(@Valid @RequestBody UserEntity entity){
 
         return ResponseEntity.status(201).body(service.saveUser(entity));
     }
 
     @PostMapping("/updatename/{id}")
     public ResponseEntity<String> updateUserById(@PathVariable long id,@Valid @RequestParam String name){
-        return ResponseEntity.status(200).body(service.updateUser(id, name));
+        return ResponseEntity.ok(service.updateUser(id, name));
     }
 
     @PostMapping("/updateemail/{id}")
@@ -46,8 +46,8 @@ public class UserController {
 
     @DeleteMapping("delUser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable long id){
-
-        return ResponseEntity.status(200).body(service.deleteUser(id));
+        service.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

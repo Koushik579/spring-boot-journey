@@ -4,10 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 
 public class UserResponseDTO {
 
-    @NotBlank(message = "Enter a valid name")
     private String name;
     private long id;
-    @NotBlank(message = "Enter a Valid Email Id")
     private String email;
 
     public String getName() {

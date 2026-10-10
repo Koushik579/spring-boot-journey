@@ -1,6 +1,5 @@
 package practice_02._0._6.koushik.service;
 
-import org.springframework.http.ResponseEntity;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,14 @@ public class UserService {
         return users;
     }
 
-    public String saveUser(UserEntity entity){
-        repository.save(entity);
-        return "user saved\n"+entity.getName()+"\n****Enjoy****";
+    public UserResponseDTO saveUser(UserEntity entity){
+        UserEntity user = repository.save(entity);
+        UserResponseDTO responseDTO = new UserResponseDTO();
+        responseDTO.setId(user.getId());
+        responseDTO.setName(user.getName());
+        responseDTO.setEmail(user.getEmail());
+
+        return responseDTO;
     }
 
     public UserResponseDTO searchUserById(Long id){
@@ -42,6 +46,7 @@ public class UserService {
         UserResponseDTO responseDTO = new UserResponseDTO();
         responseDTO.setName(entity.getName());
         responseDTO.setId(entity.getId());
+        responseDTO.setEmail(entity.getEmail());
         return responseDTO;
     }
 
@@ -49,19 +54,18 @@ public class UserService {
         UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setName(name);
         repository.save(entity);
-        return "User's name updated from to "+ name;
+        return "User's name successfully updated";
     }
     public String updateEmail(long id, String email){
         UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setEmail(email);
         repository.save(entity);
-        return "User's email updated to "+ email;
+        return "User's email successfully updated";
     }
 
-    public String deleteUser(long id){
+    public void deleteUser(long id){
         repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         repository.deleteById(id);
-        return "User deleted";
     }
 
 }
