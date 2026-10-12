@@ -3,9 +3,13 @@ package practice_02._0._6.koushik.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import practice_02._0._6.koushik.dto.UpdateNameRequest;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
 import practice_02._0._6.koushik.service.UserService;
+
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,42 +20,46 @@ public class UserController {
         this.service = service;
     }
 
-    @GetMapping("/allUsers")
+    @GetMapping("/users")
     public ResponseEntity<List<UserResponseDTO>> getallUsers(){
 
         return ResponseEntity.ok(service.allUsers());
     }
 
-    @PostMapping("/saveuser")
+    @PostMapping("/user")
     public ResponseEntity<UserResponseDTO> addUser(@Valid @RequestBody UserEntity entity){
 
         UserResponseDTO savedUser = service.saveUser(entity);
 
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/api/user/{id}")
+                .buildAndExpand(savedUser.getId())
+                .toUri();
+
         return ResponseEntity
-                .status(201)
-                .header("Location",
-                        "http://localhost:8080/api//searchUser/"+savedUser.getId())
+                .created(location)
                 .body(savedUser);
     }
 
-    @PostMapping("/updatename/{id}")
-    public ResponseEntity<String> updateUserById(@PathVariable long id,@Valid @RequestParam String name){
-        return ResponseEntity.ok(service.updateUser(id, name));
+    @PatchMapping("user/name/{id}")
+    public ResponseEntity<String> updateUserById(@PathVariable long id,@Valid @RequestBody UpdateNameRequest request){
+        return ResponseEntity.ok(service.updateUser(id, request));
     }
 
-    @PostMapping("/updateemail/{id}")
+    @PatchMapping("user/email/{id}")
     public ResponseEntity<String> updateEmailById(@PathVariable long id,@Valid @RequestParam String email){
         return ResponseEntity.ok(service.updateEmail(id, email));
     }
 
-    @GetMapping("/searchUser/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable long id){
 
         return ResponseEntity.ok(service.searchUserById(id));
     }
 
-    @DeleteMapping("delUser/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable long id){
+    @DeleteMapping("user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable long id){
         service.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

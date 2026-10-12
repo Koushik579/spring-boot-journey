@@ -14,8 +14,9 @@ public class UserEntity {
     @NotBlank(message = "Enter a valid name")
     private String name;
 
-    @Email
-    @NotBlank(message = "Enter a Valid Email Id")
+    @Email(message = "Enter a valid email address")
+    @NotBlank(message = "Email cannot be blank")
+    @Column(unique = true)
     private String email;
 
     //Getter & Setter

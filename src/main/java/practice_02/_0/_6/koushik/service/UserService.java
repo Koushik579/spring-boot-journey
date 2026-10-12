@@ -1,5 +1,6 @@
 package practice_02._0._6.koushik.service;
 
+import practice_02._0._6.koushik.dto.UpdateNameRequest;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
 import org.springframework.stereotype.Service;
@@ -50,9 +51,9 @@ public class UserService {
         return responseDTO;
     }
 
-    public String updateUser(long id, String name){
+    public String updateUser(long id, UpdateNameRequest request){
         UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
-        entity.setName(name);
+        entity.setName(request.getName());
         repository.save(entity);
         return "User's name successfully updated";
     }
