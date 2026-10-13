@@ -43,12 +43,12 @@ public class UserController {
     }
 
     @PatchMapping("user/name/{id}")
-    public ResponseEntity<String> updateUserById(@PathVariable long id,@Valid @RequestBody UpdateNameRequest request){
+    public ResponseEntity<UserResponseDTO> updateUserById(@PathVariable long id,@Valid @RequestBody UpdateNameRequest request){
         return ResponseEntity.ok(service.updateUser(id, request));
     }
 
     @PatchMapping("user/email/{id}")
-    public ResponseEntity<String> updateEmailById(@PathVariable long id,@Valid @RequestParam String email){
+    public ResponseEntity<UserResponseDTO> updateEmailById(@PathVariable long id,@Valid @RequestParam String email){
         return ResponseEntity.ok(service.updateEmail(id, email));
     }
 
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @DeleteMapping("user/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable long id){
+    public ResponseEntity<Void> deleteUser(@PathVariable long id){
         service.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
