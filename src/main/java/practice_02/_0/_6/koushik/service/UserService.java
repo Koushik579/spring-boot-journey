@@ -1,5 +1,6 @@
 package practice_02._0._6.koushik.service;
 
+import jakarta.transaction.Transactional;
 import practice_02._0._6.koushik.dto.UpdateNameRequest;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
@@ -37,17 +38,20 @@ public class UserService {
         return mapper.entityToResponseDTO(entity);
     }
 
+    @Transactional
     public UserResponseDTO updateUser(long id, UpdateNameRequest request){
         UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setName(request.getName());
-        UserEntity savedEntity = repository.save(entity);
-        return mapper.entityToResponseDTO(savedEntity);
+        //UserEntity savedEntity = repository.save(entity);
+        return mapper.entityToResponseDTO(entity);
     }
+
+    @Transactional
     public UserResponseDTO updateEmail(long id, String email){
         UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setEmail(email);
-        UserEntity savedEntity = repository.save(entity);
-        return mapper.entityToResponseDTO(savedEntity);
+        //UserEntity savedEntity = repository.save(entity);
+        return mapper.entityToResponseDTO(entity);
     }
 
     public void deleteUser(long id){
