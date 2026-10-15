@@ -1,15 +1,15 @@
 package practice_02._0._6.koushik.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "audit_tb")
 public class AuditEntity {
-    @NotNull(message = "Enter a valid ID")
+    @Id
     private long userID;
 
     @NotBlank(message = "Name field must not be empty")
@@ -21,6 +21,9 @@ public class AuditEntity {
 
     @NotBlank(message = "Enter a valid reason")
     private String comment;
+
+    @NotBlank(message = "Fill the date and time field")
+    private String dateTime;
 
     public long getUserID() {
         return userID;
@@ -52,5 +55,13 @@ public class AuditEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 }
