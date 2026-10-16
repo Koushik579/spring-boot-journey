@@ -36,8 +36,11 @@ public class AuditService {
 
     }
 
-    public List<AuditResponseDTO> getLogsByUser(List<Long> id){
-        List logs = auditRepository.findAllById(id);
-        for()
+    public List<AuditResponseDTO> getLogsByUser(long id){
+        return auditRepository.findLogsById(id)
+                .stream()
+                .map(mapper :: auditToDTO)
+                .toList();
+
     }
 }

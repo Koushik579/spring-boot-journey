@@ -53,14 +53,18 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO updateEmail(long id, String email){
-        UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
+        UserEntity entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setEmail(email);
+        AuditEntity auditEntity = new AuditEntity();
+        auditService.nameUpdateLog(auditEntity, entity, "Email ID Successfully updated");
         //UserEntity savedEntity = repository.save(entity);
         return mapper.entityToResponseDTO(entity);
     }
 
     public void deleteUser(long id){
-        repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
+        repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         repository.deleteById(id);
     }
 

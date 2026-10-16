@@ -1,15 +1,18 @@
 package practice_02._0._6.koushik.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "audit_tb")
 public class AuditEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotNull(message = "enter a valid user ID")
     private long userID;
 
     @NotBlank(message = "Name field must not be empty")
@@ -24,6 +27,14 @@ public class AuditEntity {
 
     @NotBlank(message = "Fill the date and time field")
     private String dateTime;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public long getUserID() {
         return userID;
