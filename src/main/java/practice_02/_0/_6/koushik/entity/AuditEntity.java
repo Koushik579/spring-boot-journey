@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import practice_02._0._6.koushik.enums.AuditStatus;
 
 @Entity
 @Table(name = "audit_tb")
@@ -27,6 +28,10 @@ public class AuditEntity {
 
     @NotBlank(message = "Fill the date and time field")
     private String dateTime;
+
+    @NotNull(message = "What is the status of the request?")
+    @Enumerated(EnumType.STRING)
+    private AuditStatus status;
 
     public long getId() {
         return id;
@@ -74,5 +79,13 @@ public class AuditEntity {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public AuditStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AuditStatus status) {
+        this.status = status;
     }
 }

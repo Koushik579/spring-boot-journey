@@ -1,6 +1,6 @@
 package practice_02._0._6.koushik.dto;
 
-import java.time.LocalDateTime;
+import practice_02._0._6.koushik.enums.AuditStatus;
 
 public class AuditResponseDTO {
     private long userID;
@@ -8,6 +8,7 @@ public class AuditResponseDTO {
     private String email;
     private String comment;
     private String dateTime;
+    private AuditStatus status;
 
     public long getUserID() {
         return userID;
@@ -47,5 +48,13 @@ public class AuditResponseDTO {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public AuditStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AuditStatus status) {
+        this.status = status;
     }
 }

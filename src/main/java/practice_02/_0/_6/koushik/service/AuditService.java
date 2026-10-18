@@ -1,9 +1,12 @@
 package practice_02._0._6.koushik.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import practice_02._0._6.koushik.dto.AuditResponseDTO;
 import practice_02._0._6.koushik.entity.AuditEntity;
 import practice_02._0._6.koushik.entity.UserEntity;
+import practice_02._0._6.koushik.enums.AuditStatus;
 import practice_02._0._6.koushik.mapper.Mapper;
 import practice_02._0._6.koushik.repository.AuditRepository;
 
@@ -22,7 +25,8 @@ public class AuditService {
         this.mapper = mapper;
     }
 
-    public void nameUpdateLog(AuditEntity entity, UserEntity userEntity, String comment){
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public long updateLog(AuditEntity entity, UserEntity userEntity, String comment){
         entity.setUserID(userEntity.getId());
         entity.setName(userEntity.getName());
         entity.setEmail(userEntity.getEmail());
@@ -31,9 +35,9 @@ public class AuditService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
         entity.setDateTime(formattedDateTime);
+        entity.setStatus(AuditStatus.PENDING);
         auditRepository.save(entity);
-        mapper.auditToDTO(entity);
-
+        return entity.getId();
     }
 
     public List<AuditResponseDTO> getLogsByUser(long id){

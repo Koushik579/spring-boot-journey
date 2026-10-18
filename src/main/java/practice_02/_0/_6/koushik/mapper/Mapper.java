@@ -23,6 +23,7 @@ public class Mapper {
         auditResponseDTO.setEmail(auditEntity.getEmail());
         auditResponseDTO.setDateTime(auditEntity.getDateTime());
         auditResponseDTO.setComment(auditEntity.getComment());
+        auditResponseDTO.setStatus(auditEntity.getStatus());
         return auditResponseDTO;
     }
 }
