@@ -53,12 +53,12 @@ public class UserService {
         AuditEntity auditEntity = new AuditEntity();
         long auditID = auditService.updateLog(auditEntity, entity, "Name Update Attempt : " + request.getName());
         try {
-            auditRepository.updateStatus(AuditStatus.SUCCESS, auditID);
+            auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
             //UserEntity savedEntity = repository.save(entity);//@Transactional dirty check helps here no problem if this is commented
             return mapper.entityToResponseDTO(entity);
         }
         catch (Exception e){
-            auditRepository.updateStatus(AuditStatus.FAILURE, auditID);
+            auditService.updateLogStatus(auditID, AuditStatus.FAILURE);
             return mapper.entityToResponseDTO(entity);
         }
     }
@@ -73,11 +73,12 @@ public class UserService {
         //UserEntity savedEntity = repository.save(entity);
 
         try{
-            auditRepository.updateStatus(AuditStatus.SUCCESS, auditID);
+            //throw new RuntimeException("Testing RollBack");
+            auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
             return mapper.entityToResponseDTO(entity);
         }
         catch (Exception e){
-            auditRepository.updateStatus(AuditStatus.FAILURE, auditID);
+            auditService.updateLogStatus(auditID, AuditStatus.FAILURE);
             return mapper.entityToResponseDTO(entity);
         }
     }

@@ -16,6 +16,6 @@ public interface AuditRepository extends JpaRepository<AuditEntity, Long> {
     //Audit Failure Status Update
     @Modifying
     @Query("UPDATE AuditEntity l SET l.status = :status WHERE l.id = :id")
-    void updateStatus(@Param("status") AuditStatus status,@Param("id") long id );
+    int updateStatus(@Param("status") AuditStatus status,@Param("id") long id );
 
 }

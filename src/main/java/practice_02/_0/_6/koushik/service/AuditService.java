@@ -7,6 +7,7 @@ import practice_02._0._6.koushik.dto.AuditResponseDTO;
 import practice_02._0._6.koushik.entity.AuditEntity;
 import practice_02._0._6.koushik.entity.UserEntity;
 import practice_02._0._6.koushik.enums.AuditStatus;
+import practice_02._0._6.koushik.exception.ResourceNotFoundException;
 import practice_02._0._6.koushik.mapper.Mapper;
 import practice_02._0._6.koushik.repository.AuditRepository;
 
@@ -45,6 +46,12 @@ public class AuditService {
                 .stream()
                 .map(mapper :: auditToDTO)
                 .toList();
+    }
 
+    public void updateLogStatus(long id , AuditStatus status){
+        int logStatusCode = auditRepository.updateStatus(status, id);
+        if(logStatusCode == 0){
+            throw new ResourceNotFoundException("Audit Record Not found with " + id);
+        }
     }
 }
