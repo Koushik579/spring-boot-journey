@@ -1,7 +1,6 @@
 package practice_02._0._6.koushik.service;
 
 import jakarta.transaction.Transactional;
-import practice_02._0._6.koushik.dto.UpdateNameRequest;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.AuditEntity;
 import practice_02._0._6.koushik.entity.UserEntity;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import practice_02._0._6.koushik.enums.AuditStatus;
 import practice_02._0._6.koushik.exception.ResourceNotFoundException;
 import practice_02._0._6.koushik.mapper.Mapper;
-import practice_02._0._6.koushik.repository.AuditRepository;
 import practice_02._0._6.koushik.repository.UserRepository;
 
 import java.util.List;
@@ -19,13 +17,13 @@ public class UserService {
     private final UserRepository repository;
     private final Mapper mapper;
     private final AuditService auditService;
-    private final AuditRepository auditRepository;
+    private final UserUpdateTransactionService transactionService;
 
-    public UserService(UserRepository repository, Mapper mapper, AuditService auditService, AuditRepository auditRepository) {
+    public UserService(UserRepository repository, Mapper mapper, AuditService auditService, UserUpdateTransactionService transactionService) {
         this.repository = repository;
         this.mapper = mapper;
         this.auditService = auditService;
-        this.auditRepository = auditRepository;
+        this.transactionService = transactionService;
     }
 
     public List<UserResponseDTO> allUsers(){
@@ -41,20 +39,20 @@ public class UserService {
     }
 
     public UserResponseDTO searchUserById(Long id){
-        UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
+        UserEntity entity = repository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("No User Found with id: "+id));
         return mapper.entityToResponseDTO(entity);
     }
 
     @Transactional
-    public UserResponseDTO updateUser(long id, UpdateNameRequest request){
+    public UserResponseDTO updateUser(long id, String request){
         UserEntity entity = repository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("No User Found with id: "+id));
-        entity.setName(request.getName());
         AuditEntity auditEntity = new AuditEntity();
-        long auditID = auditService.updateLog(auditEntity, entity, "Name Update Attempt : " + request.getName());
+        long auditID = auditService.saveLog(auditEntity, entity,
+                "Name Update Attempt : " + request.getName());
         try {
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
-            //UserEntity savedEntity = repository.save(entity);//@Transactional dirty check helps here no problem if this is commented
             return mapper.entityToResponseDTO(entity);
         }
         catch (Exception e){
@@ -63,19 +61,16 @@ public class UserService {
         }
     }
 
-    @Transactional
     public UserResponseDTO updateEmail(long id, String email){
         UserEntity entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
-        entity.setEmail(email);
         AuditEntity auditEntity = new AuditEntity();
-        long auditID = auditService.updateLog(auditEntity, entity, "Email Update Attempted : " + email );
-        //UserEntity savedEntity = repository.save(entity);
-
+        long auditID = auditService.saveLog(auditEntity, entity,
+                "Email Update Attempted : " + email );
         try{
-            //throw new RuntimeException("Testing RollBack");
+            UserResponseDTO responseDTO = transactionService.emailUpdater(id,email);
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
-            return mapper.entityToResponseDTO(entity);
+            return responseDTO;
         }
         catch (Exception e){
             auditService.updateLogStatus(auditID, AuditStatus.FAILURE);

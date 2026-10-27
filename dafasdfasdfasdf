@@ -1,0 +1,228 @@
+[1mdiff --git a/src/main/java/practice_02/_0/_6/koushik/controller/UserController.java b/src/main/java/practice_02/_0/_6/koushik/controller/UserController.java[m
+[1mindex f0822f2..075eca3 100644[m
+[1m--- a/src/main/java/practice_02/_0/_6/koushik/controller/UserController.java[m
+[1m+++ b/src/main/java/practice_02/_0/_6/koushik/controller/UserController.java[m
+[36m@@ -5,7 +5,7 @@[m [mimport org.springframework.http.ResponseEntity;[m
+ import org.springframework.web.bind.annotation.*;[m
+ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;[m
+ import practice_02._0._6.koushik.dto.AuditResponseDTO;[m
+[31m-import practice_02._0._6.koushik.dto.UpdateNameRequest;[m
+[32m+[m[32mimport practice_02._0._6.koushik.dto.NameUpdateRequest;[m
+ import practice_02._0._6.koushik.dto.UserResponseDTO;[m
+ import practice_02._0._6.koushik.entity.UserEntity;[m
+ import practice_02._0._6.koushik.service.AuditService;[m
+[36m@@ -17,23 +17,23 @@[m [mimport java.util.List;[m
+ @RestController[m
+ @RequestMapping("/api")[m
+ public class UserController {[m
+[31m-    private final UserService service;[m
+[32m+[m[32m    private final UserService userService;[m
+     private final AuditService auditService;[m
+[31m-    public UserController(UserService service, AuditService auditService) {[m
+[31m-        this.service = service;[m
+[32m+[m[32m    public UserController(UserService userService, AuditService auditService) {[m
+[32m+[m[32m        this.userService = userService;[m
+         this.auditService = auditService;[m
+     }[m
+ [m
+     @GetMapping("/users")[m
+     public ResponseEntity<List<UserResponseDTO>> getallUsers(){[m
+ [m
+[31m-        return ResponseEntity.ok(service.allUsers());[m
+[32m+[m[32m        return ResponseEntity.ok(userService.allUsers());[m
+     }[m
+ [m
+     @PostMapping("/user")[m
+     public ResponseEntity<UserResponseDTO> addUser(@Valid @RequestBody UserEntity entity){[m
+ [m
+[31m-        UserResponseDTO savedUser = service.saveUser(entity);[m
+[32m+[m[32m        UserResponseDTO savedUser = userService.saveUser(entity);[m
+ [m
+         URI location = ServletUriComponentsBuilder[m
+                 .fromCurrentContextPath()[m
+[36m@@ -49,26 +49,26 @@[m [mpublic class UserController {[m
+     @PatchMapping("user/name/{id}")[m
+     public ResponseEntity<UserResponseDTO> updateUserById([m
+             @PathVariable long id,[m
+[31m-            @Valid @RequestBody UpdateNameRequest request){[m
+[31m-        return ResponseEntity.ok(service.updateUser(id, request));[m
+[32m+[m[32m            @Valid @RequestBody NameUpdateRequest request){[m
+[32m+[m[32m        return ResponseEntity.ok(userService.updateUser(id, request));[m
+     }[m
+ [m
+     @PatchMapping("user/email/{id}")[m
+     public ResponseEntity<UserResponseDTO> updateEmailById([m
+             @PathVariable long id,[m
+             @Valid @RequestParam String email){[m
+[31m-        return ResponseEntity.ok(service.updateEmail(id, email));[m
+[32m+[m[32m        return ResponseEntity.ok(userService.updateEmail(id, email));[m
+     }[m
+ [m
+     @GetMapping("/user/{id}")[m
+     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable long id){[m
+ [m
+[31m-        return ResponseEntity.ok(service.searchUserById(id));[m
+[32m+[m[32m        return ResponseEntity.ok(userService.searchUserById(id));[m
+     }[m
+ [m
+     @DeleteMapping("user/{id}")[m
+     public ResponseEntity<Void> deleteUser(@PathVariable long id){[m
+[31m-        service.deleteUser(id);[m
+[32m+[m[32m        userService.deleteUser(id);[m
+         return ResponseEntity.noContent().build();[m
+     }[m
+ [m
+[1mdiff --git a/src/main/java/practice_02/_0/_6/koushik/dto/NameUpdateRequest.java b/src/main/java/practice_02/_0/_6/koushik/dto/NameUpdateRequest.java[m
+[1mindex 21478a0..e1e57b9 100644[m
+[1m--- a/src/main/java/practice_02/_0/_6/koushik/dto/NameUpdateRequest.java[m
+[1m+++ b/src/main/java/practice_02/_0/_6/koushik/dto/NameUpdateRequest.java[m
+[36m@@ -4,16 +4,11 @@[m [mimport jakarta.persistence.Column;[m
+ import jakarta.validation.constraints.Email;[m
+ import jakarta.validation.constraints.NotBlank;[m
+ [m
+[31m-public class UserUpdateRequest {[m
+[32m+[m[32mpublic class NameUpdateRequest {[m
+ [m
+     @NotBlank(message = "Enter a valid name")[m
+     private String name;[m
+ [m
+[31m-    @Email(message = "Enter a valid email address")[m
+[31m-    @NotBlank(message = "Email cannot be blank")[m
+[31m-    @Column(unique = true)[m
+[31m-    private String email;[m
+[31m-[m
+     public String getName() {[m
+         return name;[m
+     }[m
+[36m@@ -22,11 +17,5 @@[m [mpublic class UserUpdateRequest {[m
+         this.name = name;[m
+     }[m
+ [m
+[31m-    public String getEmail() {[m
+[31m-        return email;[m
+[31m-    }[m
+ [m
+[31m-    public void setEmail(String email) {[m
+[31m-        this.email = email;[m
+[31m-    }[m
+ }[m
+[1mdiff --git a/src/main/java/practice_02/_0/_6/koushik/service/AuditService.java b/src/main/java/practice_02/_0/_6/koushik/service/AuditService.java[m
+[1mindex 3e8cab8..1d13d33 100644[m
+[1m--- a/src/main/java/practice_02/_0/_6/koushik/service/AuditService.java[m
+[1m+++ b/src/main/java/practice_02/_0/_6/koushik/service/AuditService.java[m
+[36m@@ -27,7 +27,7 @@[m [mpublic class AuditService {[m
+     }[m
+ [m
+     @Transactional(propagation = Propagation.REQUIRES_NEW)[m
+[31m-    public long updateLog(AuditEntity entity, UserEntity userEntity, String comment){[m
+[32m+[m[32m    public long saveLog(AuditEntity entity, UserEntity userEntity, String comment){[m
+         entity.setUserID(userEntity.getId());[m
+         entity.setName(userEntity.getName());[m
+         entity.setEmail(userEntity.getEmail());[m
+[36m@@ -48,6 +48,7 @@[m [mpublic class AuditService {[m
+                 .toList();[m
+     }[m
+ [m
+[32m+[m[32m    @Transactional(propagation = Propagation.REQUIRES_NEW)[m
+     public void updateLogStatus(long id , AuditStatus status){[m
+         int logStatusCode = auditRepository.updateStatus(status, id);[m
+         if(logStatusCode == 0){[m
+[1mdiff --git a/src/main/java/practice_02/_0/_6/koushik/service/UserService.java b/src/main/java/practice_02/_0/_6/koushik/service/UserService.java[m
+[1mindex 153fc0e..b661efc 100644[m
+[1m--- a/src/main/java/practice_02/_0/_6/koushik/service/UserService.java[m
+[1m+++ b/src/main/java/practice_02/_0/_6/koushik/service/UserService.java[m
+[36m@@ -1,7 +1,6 @@[m
+ package practice_02._0._6.koushik.service;[m
+ [m
+ import jakarta.transaction.Transactional;[m
+[31m-import practice_02._0._6.koushik.dto.UpdateNameRequest;[m
+ import practice_02._0._6.koushik.dto.UserResponseDTO;[m
+ import practice_02._0._6.koushik.entity.AuditEntity;[m
+ import practice_02._0._6.koushik.entity.UserEntity;[m
+[36m@@ -9,7 +8,6 @@[m [mimport org.springframework.stereotype.Service;[m
+ import practice_02._0._6.koushik.enums.AuditStatus;[m
+ import practice_02._0._6.koushik.exception.ResourceNotFoundException;[m
+ import practice_02._0._6.koushik.mapper.Mapper;[m
+[31m-import practice_02._0._6.koushik.repository.AuditRepository;[m
+ import practice_02._0._6.koushik.repository.UserRepository;[m
+ [m
+ import java.util.List;[m
+[36m@@ -19,13 +17,13 @@[m [mpublic class UserService {[m
+     private final UserRepository repository;[m
+     private final Mapper mapper;[m
+     private final AuditService auditService;[m
+[31m-    private final AuditRepository auditRepository;[m
+[32m+[m[32m    private final UserUpdateTransactionService transactionService;[m
+ [m
+[31m-    public UserService(UserRepository repository, Mapper mapper, AuditService auditService, AuditRepository auditRepository) {[m
+[32m+[m[32m    public UserService(UserRepository repository, Mapper mapper, AuditService auditService, UserUpdateTransactionService transactionService) {[m
+         this.repository = repository;[m
+         this.mapper = mapper;[m
+         this.auditService = auditService;[m
+[31m-        this.auditRepository = auditRepository;[m
+[32m+[m[32m        this.transactionService = transactionService;[m
+     }[m
+ [m
+     public List<UserResponseDTO> allUsers(){[m
+[36m@@ -41,20 +39,20 @@[m [mpublic class UserService {[m
+     }[m
+ [m
+     public UserResponseDTO searchUserById(Long id){[m
+[31m-        UserEntity entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));[m
+[32m+[m[32m        UserEntity entity = repository.findById(id).orElseThrow(() ->[m
+[32m+[m[32m                new ResourceNotFoundException("No User Found with id: "+id));[m
+         return mapper.entityToResponseDTO(entity);[m
+     }[m
+ [m
+     @Transactional[m
+[31m-    public UserResponseDTO updateUser(long id, UpdateNameRequest request){[m
+[32m+[m[32m    public UserResponseDTO updateUser(long id, String request){[m
+         UserEntity entity = repository.findById(id).orElseThrow(() ->[m
+                 new ResourceNotFoundException("No User Found with id: "+id));[m
+[31m-        entity.setName(request.getName());[m
+         AuditEntity auditEntity = new AuditEntity();[m
+[31m-        long auditID = auditService.updateLog(auditEntity, entity, "Name Update Attempt : " + request.getName());[m
+[32m+[m[32m        long auditID = auditService.saveLog(auditEntity, entity,[m
+[32m+[m[32m                "Name Update Attempt : " + request.getName());[m
+         try {[m
+             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);[m
+[31m-            //UserEntity savedEntity = repository.save(entity);//@Transactional dirty check helps here no problem if this is commented[m
+             return mapper.entityToResponseDTO(entity);[m
+         }[m
+         catch (Exception e){[m
+[36m@@ -63,19 +61,16 @@[m [mpublic class UserService {[m
+         }[m
+     }[m
+ [m
+[31m-    @Transactional[m
+     public UserResponseDTO updateEmail(long id, String email){[m
+         UserEntity entity = repository.findById(id)[m
+                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));[m
+[31m-        entity.setEmail(email);[m
+         AuditEntity auditEntity = new AuditEntity();[m
+[31m-        long auditID = auditService.updateLog(auditEntity, entity, "Email Update Attempted : " + email );[m
+[31m-        //UserEntity savedEntity = repository.save(entity);[m
+[31m-[m
+[32m+[m[32m        long auditID = auditService.saveLog(auditEntity, entity,[m
+[32m+[m[32m                "Email Update Attempted : " + email );[m
+         try{[m
+[31m-            //throw new RuntimeException("Testing RollBack");[m
+[32m+[m[32m            UserResponseDTO responseDTO = transactionService.emailUpdater(id,email);[m
+             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);[m
+[31m-            return mapper.entityToResponseDTO(entity);[m
+[32m+[m[32m            return responseDTO;[m
+         }[m
+         catch (Exception e){[m
+             auditService.updateLogStatus(auditID, AuditStatus.FAILURE);[m
+[1mdiff --git a/src/main/resources/application.properties b/src/main/resources/application.properties[m
+[1mindex 47dc63e..480f100 100644[m
+[1m--- a/src/main/resources/application.properties[m
+[1m+++ b/src/main/resources/application.properties[m
+[36m@@ -1,6 +1,6 @@[m
+ spring.application.name=koushik[m
+ [m
+[31m-spring.datasource.url=jdbc:postgresql://localhost:5432/practicedb[m
+[32m+[m[32mspring.datasource.url=jdbc:postgresql://localhost:5432/practice_db[m
+ spring.datasource.username=postgres[m
+ spring.datasource.password=admin[m
+ [m

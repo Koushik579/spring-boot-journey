@@ -27,7 +27,7 @@ public class AuditService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public long updateLog(AuditEntity entity, UserEntity userEntity, String comment){
+    public long saveLog(AuditEntity entity, UserEntity userEntity, String comment){
         entity.setUserID(userEntity.getId());
         entity.setName(userEntity.getName());
         entity.setEmail(userEntity.getEmail());
@@ -48,6 +48,7 @@ public class AuditService {
                 .toList();
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateLogStatus(long id , AuditStatus status){
         int logStatusCode = auditRepository.updateStatus(status, id);
         if(logStatusCode == 0){
