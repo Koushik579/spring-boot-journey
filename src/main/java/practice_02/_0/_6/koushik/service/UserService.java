@@ -1,6 +1,8 @@
 package practice_02._0._6.koushik.service;
 
 import jakarta.transaction.Transactional;
+import practice_02._0._6.koushik.dto.EmailUpdateRequest;
+import practice_02._0._6.koushik.dto.NameUpdateRequest;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.AuditEntity;
 import practice_02._0._6.koushik.entity.UserEntity;
@@ -45,15 +47,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO updateUser(long id, String request){
+    public UserResponseDTO updateUser(long id, NameUpdateRequest name){
         UserEntity entity = repository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("No User Found with id: "+id));
         AuditEntity auditEntity = new AuditEntity();
         long auditID = auditService.saveLog(auditEntity, entity,
-                "Name Update Attempt : " + request.getName());
+                "Name Update Attempt : " + name.getName());
         try {
+            UserResponseDTO responseDTO = transactionService.nameUpdater(id, name.getName());
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
-            return mapper.entityToResponseDTO(entity);
+            return responseDTO;
         }
         catch (Exception e){
             auditService.updateLogStatus(auditID, AuditStatus.FAILURE);
@@ -61,14 +64,15 @@ public class UserService {
         }
     }
 
-    public UserResponseDTO updateEmail(long id, String email){
+    @Transactional
+    public UserResponseDTO updateEmail(long id, EmailUpdateRequest email){
         UserEntity entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         AuditEntity auditEntity = new AuditEntity();
         long auditID = auditService.saveLog(auditEntity, entity,
-                "Email Update Attempted : " + email );
+                "Email Update Attempted : " + email.getEmail());
         try{
-            UserResponseDTO responseDTO = transactionService.emailUpdater(id,email);
+            UserResponseDTO responseDTO = transactionService.emailUpdater(id,email.getEmail());
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
             return responseDTO;
         }

@@ -31,7 +31,7 @@ public class UserUpdateTransactionService {
     }
 
     @Transactional
-    public UserResponseDTO namelUpdater(long id, String name){
+    public UserResponseDTO nameUpdater(long id, String name){
         UserEntity entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setName(name);

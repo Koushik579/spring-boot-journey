@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import practice_02._0._6.koushik.dto.AuditResponseDTO;
+import practice_02._0._6.koushik.dto.EmailUpdateRequest;
 import practice_02._0._6.koushik.dto.NameUpdateRequest;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.entity.UserEntity;
@@ -56,7 +57,7 @@ public class UserController {
     @PatchMapping("user/email/{id}")
     public ResponseEntity<UserResponseDTO> updateEmailById(
             @PathVariable long id,
-            @Valid @RequestParam String email){
+            @Valid @RequestBody EmailUpdateRequest email){
         return ResponseEntity.ok(userService.updateEmail(id, email));
     }
 
