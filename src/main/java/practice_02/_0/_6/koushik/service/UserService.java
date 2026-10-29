@@ -53,14 +53,15 @@ public class UserService {
         AuditEntity auditEntity = new AuditEntity();
         long auditID = auditService.saveLog(auditEntity, entity,
                 "Name Update Attempt : " + name.getName());
+        UserResponseDTO responseDTO = null;
         try {
-            UserResponseDTO responseDTO = transactionService.nameUpdater(id, name.getName());
+            responseDTO = transactionService.nameUpdater(id, name.getName());
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
             return responseDTO;
         }
         catch (Exception e){
             auditService.updateLogStatus(auditID, AuditStatus.FAILURE);
-            return mapper.entityToResponseDTO(entity);
+            return responseDTO;
         }
     }
 
@@ -71,14 +72,15 @@ public class UserService {
         AuditEntity auditEntity = new AuditEntity();
         long auditID = auditService.saveLog(auditEntity, entity,
                 "Email Update Attempted : " + email.getEmail());
+        UserResponseDTO responseDTO = null;
         try{
-            UserResponseDTO responseDTO = transactionService.emailUpdater(id,email.getEmail());
+            responseDTO = transactionService.emailUpdater(id,email.getEmail());
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
             return responseDTO;
         }
         catch (Exception e){
             auditService.updateLogStatus(auditID, AuditStatus.FAILURE);
-            return mapper.entityToResponseDTO(entity);
+            return responseDTO;
         }
     }
 

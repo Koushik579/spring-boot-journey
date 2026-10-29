@@ -9,5 +9,5 @@ public class KoushikApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(KoushikApplication.class, args);
 	}
-
+ 
 }
