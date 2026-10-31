@@ -32,4 +32,14 @@ public class TestController {
     public String transactionMandatoryTest(){
         return testTTransactions.testingMandatory();
     }
+
+    @GetMapping("/log/transaction/never")
+    public String transactionNeverTest(){
+        return testTTransactions.testingNever();
+    }
+
+    @GetMapping("/log/transaction/notsupported")
+    public void transactionNotSupportedTest(){
+        testTTransactions.testingNotSupported();
+    }
 }
