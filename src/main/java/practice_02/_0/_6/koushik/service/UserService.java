@@ -1,6 +1,6 @@
 package practice_02._0._6.koushik.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import practice_02._0._6.koushik.dto.EmailUpdateRequest;
 import practice_02._0._6.koushik.dto.NameUpdateRequest;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
@@ -57,10 +57,12 @@ public class UserService {
         try {
             responseDTO = transactionService.nameUpdater(id, name.getName());
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
+            System.out.println(auditService.getLogsByUser(id));
             return responseDTO;
         }
         catch (Exception e){
             auditService.updateLogStatus(auditID, AuditStatus.FAILURE);
+            System.out.println(auditService.getLogsByUser(id));
             return responseDTO;
         }
     }
@@ -76,10 +78,12 @@ public class UserService {
         try{
             responseDTO = transactionService.emailUpdater(id,email.getEmail());
             auditService.updateLogStatus(auditID, AuditStatus.SUCCESS);
+            System.out.println(auditService.getLogsByUser(id));
             return responseDTO;
         }
         catch (Exception e){
             auditService.updateLogStatus(auditID, AuditStatus.FAILURE);
+            System.out.println(auditService.getLogsByUser(id));
             return responseDTO;
         }
     }

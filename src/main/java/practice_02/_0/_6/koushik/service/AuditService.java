@@ -3,6 +3,7 @@ package practice_02._0._6.koushik.service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import practice_02._0._6.koushik.dto.AuditResponseDTO;
 import practice_02._0._6.koushik.entity.AuditEntity;
 import practice_02._0._6.koushik.entity.UserEntity;
@@ -41,18 +42,23 @@ public class AuditService {
         return entity.getId();
     }
 
-    public List<AuditResponseDTO> getLogsByUser(long id){
-        return auditRepository.findLogsById(id)
-                .stream()
-                .map(mapper :: auditToDTO)
-                .toList();
-    }
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateLogStatus(long id , AuditStatus status){
         int logStatusCode = auditRepository.updateStatus(status, id);
         if(logStatusCode == 0){
             throw new ResourceNotFoundException("Audit Record Not found with " + id);
         }
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<AuditResponseDTO> getLogsByUser(long id){
+        boolean active =
+                TransactionSynchronizationManager.isActualTransactionActive();
+
+        System.out.println("Transaction active: " + active);
+        return auditRepository.findLogsById(id)
+                .stream()
+                .map(mapper :: auditToDTO)
+                .toList();
     }
 }
