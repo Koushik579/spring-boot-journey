@@ -13,18 +13,18 @@ import java.io.IOException;
 @Service
 public class UserUpdateTransactionService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final Mapper mapper;
 
     public UserUpdateTransactionService(UserRepository repository, Mapper mapper) {
-        this.repository = repository;
+        this.userRepository = repository;
         this.mapper = mapper;
     }
 
 
     @Transactional
     public UserResponseDTO emailUpdater(long id, String email){
-        UserEntity entity = repository.findById(id)
+        UserEntity entity = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setEmail(email);
         //Temporary Exception for testing
@@ -34,7 +34,7 @@ public class UserUpdateTransactionService {
 
     @Transactional
     public UserResponseDTO nameUpdater(long id, String name){
-        UserEntity entity = repository.findById(id)
+        UserEntity entity = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         entity.setName(name);
         //Temporary Exception for testing
@@ -47,7 +47,7 @@ public class UserUpdateTransactionService {
     public void updateEmailWithCheckedException(long id, String email)
             throws IOException {
 
-        UserEntity user = repository.findById(id)
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
 

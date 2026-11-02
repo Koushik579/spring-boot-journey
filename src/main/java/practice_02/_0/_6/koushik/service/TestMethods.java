@@ -4,9 +4,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import practice_02._0._6.koushik.entity.AuditEntity;
+import practice_02._0._6.koushik.entity.UserEntity;
+import practice_02._0._6.koushik.exception.ResourceNotFoundException;
+import practice_02._0._6.koushik.repository.AuditRepository;
+import practice_02._0._6.koushik.repository.UserRepository;
 
 @Service
 public class TestMethods {
+
+    private final AuditRepository auditRepository;
+    private final UserRepository userRepository;
+    private final AuditService auditService;
+
+    public TestMethods(AuditRepository auditRepository, UserRepository userRepository, AuditService auditService) {
+        this.auditRepository = auditRepository;
+        this.userRepository = userRepository;
+        this.auditService = auditService;
+    }
 
     @Transactional(propagation = Propagation.MANDATORY)
     public String Mandatorytester(){
@@ -33,4 +48,12 @@ public class TestMethods {
         System.out.println("Inside NOT_SUPPORTED: " + active);
     }
 
+    @Transactional(propagation = Propagation.NESTED)
+    public void testNested(long id, String name){
+        UserEntity entity = userRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("No User Found with id: "+id));
+        AuditEntity auditEntity = new AuditEntity();
+        auditService.saveLog(auditEntity, entity,
+                "Name Update Attempt : " + name);
+    }
 }

@@ -1,8 +1,8 @@
 package practice_02._0._6.koushik.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.service.AuditService;
 import practice_02._0._6.koushik.service.TestTTransactions;
 import practice_02._0._6.koushik.service.UserService;
@@ -41,5 +41,11 @@ public class TestController {
     @GetMapping("/log/transaction/notsupported")
     public void transactionNotSupportedTest(){
         testTTransactions.testingNotSupported();
+    }
+
+    @PatchMapping("/log/transaction/nested/{id}")
+    public ResponseEntity<UserResponseDTO> transactionNestedTest(@PathVariable long id,
+                                                                 @RequestBody String name){
+       return ResponseEntity.ok(testTTransactions.testNestedWithNameUpdater(id, name));
     }
 }
