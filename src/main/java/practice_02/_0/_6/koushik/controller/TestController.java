@@ -48,4 +48,9 @@ public class TestController {
                                                                  @RequestBody String name){
        return ResponseEntity.ok(testTTransactions.testNestedWithNameUpdater(id, name));
     }
+
+    @GetMapping("/schedule")
+    public void scheduleTest(){
+        testTTransactions.testSchedulePrint();
+    }
 }

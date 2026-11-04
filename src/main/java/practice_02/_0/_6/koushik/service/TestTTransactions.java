@@ -67,4 +67,8 @@ public class TestTTransactions {
         return mapper.entityToResponseDTO(entity);
 
     }
+
+    public void testSchedulePrint(){
+       testMethods.getTestResult();
+    }
 }

@@ -1,5 +1,7 @@
 package practice_02._0._6.koushik.service;
 
+import jakarta.annotation.PostConstruct;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,5 +57,22 @@ public class TestMethods {
         AuditEntity auditEntity = new AuditEntity();
         auditService.saveLog(auditEntity, entity,
                 "Name Update Attempt : " + name);
+    }
+
+    @PostConstruct
+    public String testPostConstruct(){
+        return "PostConstruct Executed";
+    }
+
+    private int count = 0;
+    private String testResult = "Not yest started";
+    @Scheduled(fixedRate = 6000)
+    public void testScheduled(){
+        count++;
+        testResult = "Test Schedule :" + count;
+    }
+
+    public void getTestResult(){
+        System.out.println(testResult);
     }
 }
