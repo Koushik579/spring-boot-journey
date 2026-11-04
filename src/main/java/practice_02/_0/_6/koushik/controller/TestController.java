@@ -4,22 +4,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import practice_02._0._6.koushik.dto.UserResponseDTO;
 import practice_02._0._6.koushik.service.AuditService;
+import practice_02._0._6.koushik.service.TestMethods;
 import practice_02._0._6.koushik.service.TestTTransactions;
 import practice_02._0._6.koushik.service.UserService;
 
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
-    private final UserService userService;
-    private final AuditService auditService;
     private final TestTTransactions testTTransactions;
-
-    public TestController(UserService userService,
-                          AuditService auditService,
-                          TestTTransactions testTTransactions) {
-        this.userService = userService;
-        this.auditService = auditService;
+    private final TestMethods testMethods;
+    public TestController(TestTTransactions testTTransactions, TestMethods testMethods) {
         this.testTTransactions = testTTransactions;
+        this.testMethods = testMethods;
     }
 
     @GetMapping("/log/transaction/supports")
@@ -50,7 +46,7 @@ public class TestController {
     }
 
     @GetMapping("/schedule")
-    public void scheduleTest(){
-        testTTransactions.testSchedulePrint();
+    public ResponseEntity<String> scheduleTest(){
+        return ResponseEntity.ok(testMethods.testScheduled());
     }
 }
