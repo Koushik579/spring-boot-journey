@@ -13,7 +13,7 @@ public class AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID", nullable = false)
     @NotNull(message = "enter a valid user ID")
     private UserEntity user;
