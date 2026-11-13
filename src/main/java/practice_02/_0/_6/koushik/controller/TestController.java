@@ -47,6 +47,6 @@ public class TestController {
 
     @GetMapping("/schedule")
     public ResponseEntity<String> scheduleTest(){
-        return ResponseEntity.ok(testMethods.testScheduled());
+        return ResponseEntity.ok(testMethods.getTestResult());
     }
 }

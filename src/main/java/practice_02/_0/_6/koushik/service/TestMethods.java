@@ -68,13 +68,13 @@ public class TestMethods {
     private String testResult = "Not yest started";
     @Scheduled(fixedRate = 6000)
     public String testScheduled(){
+        System.out.println(testResult);
         count++;
         testResult = "Test Schedule :" + count;
-        System.out.println(testResult);
         return testResult;
     }
 
-    public void getTestResult(){
-        System.out.println(testResult);
+    public String getTestResult(){
+        return testResult;
     }
 }

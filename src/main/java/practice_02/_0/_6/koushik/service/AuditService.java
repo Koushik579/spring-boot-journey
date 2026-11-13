@@ -29,7 +29,7 @@ public class AuditService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public long saveLog(AuditEntity entity, UserEntity userEntity, String comment){
-        entity.setUserID(userEntity.getId());
+        entity.setUser(userEntity);
         entity.setName(userEntity.getName());
         entity.setEmail(userEntity.getEmail());
         entity.setComment(comment);

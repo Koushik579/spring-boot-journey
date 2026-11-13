@@ -10,7 +10,7 @@ import practice_02._0._6.koushik.enums.AuditStatus;
 import java.util.List;
 
 public interface AuditRepository extends JpaRepository<AuditEntity, Long> {
-    @Query("SELECT l FROM AuditEntity l WHERE l.userID = :id")
+    @Query("SELECT l FROM AuditEntity l WHERE l.user.id = :id")
     List<AuditEntity> findLogsById(@Param("id") long id);
 
     //Audit Failure Status Update

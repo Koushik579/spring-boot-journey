@@ -18,7 +18,7 @@ public class Mapper {
 
     public AuditResponseDTO auditToDTO(AuditEntity auditEntity){
         AuditResponseDTO auditResponseDTO = new AuditResponseDTO();
-        auditResponseDTO.setUserID(auditEntity.getUserID());
+        auditResponseDTO.setUserID(auditEntity.getUser().getId());
         auditResponseDTO.setName(auditEntity.getName());
         auditResponseDTO.setEmail(auditEntity.getEmail());
         auditResponseDTO.setDateTime(auditEntity.getDateTime());

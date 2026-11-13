@@ -13,8 +13,10 @@ public class AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "userID", nullable = false)
     @NotNull(message = "enter a valid user ID")
-    private long userID;
+    private UserEntity user;
 
     @NotBlank(message = "Name field must not be empty")
     private String name;
@@ -41,12 +43,12 @@ public class AuditEntity {
         this.id = id;
     }
 
-    public long getUserID() {
-        return userID;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setUserID(long userID) {
-        this.userID = userID;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public String getName() {
