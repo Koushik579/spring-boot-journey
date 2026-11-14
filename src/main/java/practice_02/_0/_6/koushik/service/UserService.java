@@ -16,39 +16,49 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final Mapper mapper;
     private final AuditService auditService;
     private final UserUpdateTransactionService transactionService;
 
-    public UserService(UserRepository repository, Mapper mapper, AuditService auditService, UserUpdateTransactionService transactionService) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository, Mapper mapper, AuditService auditService, UserUpdateTransactionService transactionService) {
+        this.userRepository = userRepository;
         this.mapper = mapper;
         this.auditService = auditService;
         this.transactionService = transactionService;
     }
 
     public List<UserResponseDTO> allUsers(){
-        return repository.findAll()
+        return userRepository.findAll()
                 .stream()
                 .map(mapper::entityToResponseDTO)
                 .toList();
     }
 
+    @Transactional
     public UserResponseDTO saveUser(UserEntity entity){
-        UserEntity user = repository.save(entity);
-        return mapper.entityToResponseDTO(user);
+        UserEntity user = userRepository.save(entity);
+        AuditEntity audit = new AuditEntity();
+        long auditId = auditService.saveLog(audit, user,"New User Registered");
+        try {
+            auditService.updateLogStatus(auditId, AuditStatus.SUCCESS);
+            return mapper.entityToResponseDTO(user);
+        }
+        catch (Exception e){
+            auditService.updateLogStatus(auditId, AuditStatus.FAILURE);
+            return mapper.entityToResponseDTO(user);
+        }
     }
 
     public UserResponseDTO searchUserById(Long id){
-        UserEntity entity = repository.findById(id).orElseThrow(() ->
+        UserEntity entity = userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("No User Found with id: "+id));
         return mapper.entityToResponseDTO(entity);
     }
 
     @Transactional
     public UserResponseDTO updateUser(long id, NameUpdateRequest name){
-        UserEntity entity = repository.findById(id).orElseThrow(() ->
+        UserEntity entity = userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("No User Found with id: "+id));
         AuditEntity auditEntity = new AuditEntity();
         long auditID = auditService.saveLog(auditEntity, entity,
@@ -69,7 +79,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO updateEmail(long id, EmailUpdateRequest email){
-        UserEntity entity = repository.findById(id)
+        UserEntity entity = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
         AuditEntity auditEntity = new AuditEntity();
         long auditID = auditService.saveLog(auditEntity, entity,
@@ -89,9 +99,9 @@ public class UserService {
     }
 
     public void deleteUser(long id){
-        repository.findById(id)
+        userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No User Found with id: "+id));
-        repository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
 }
