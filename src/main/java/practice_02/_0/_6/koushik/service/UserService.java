@@ -39,7 +39,7 @@ public class UserService {
     public UserResponseDTO saveUser(UserEntity entity){
         UserEntity user = userRepository.save(entity);
         AuditEntity audit = new AuditEntity();
-        long auditId = auditService.saveLog(audit, user,"New User Registered");
+        long auditId = auditService.newUserLogs(audit,user);
         try {
             auditService.updateLogStatus(auditId, AuditStatus.SUCCESS);
             return mapper.entityToResponseDTO(user);

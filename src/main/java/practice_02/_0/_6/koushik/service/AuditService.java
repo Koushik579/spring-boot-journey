@@ -29,20 +29,32 @@ public class AuditService {
         this.mapper = mapper;
         this.userRepository = userRepository;
     }
-
+    private String dateAndTimeGenerator(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return now.format(formatter);
+    }
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public long saveLog(AuditEntity auditEntity, UserEntity userEntity, String comment){
         auditEntity.setUser(userEntity);
         auditEntity.setName(userEntity.getName());
         auditEntity.setEmail(userEntity.getEmail());
         auditEntity.setComment(comment);
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = now.format(formatter);
-        auditEntity.setDateTime(formattedDateTime);
+        auditEntity.setDateTime(dateAndTimeGenerator());
         auditEntity.setStatus(AuditStatus.PENDING);
-        auditRepository.save(auditEntity);
-        return auditEntity.getId();
+        AuditEntity auditId = auditRepository.save(auditEntity);
+        return auditId.getId();
+    }
+    @Transactional
+    public long newUserLogs(AuditEntity auditEntity, UserEntity userEntity){
+        auditEntity.setComment("New User Register");
+        auditEntity.setEmail(userEntity.getEmail());
+        auditEntity.setName(userEntity.getName());
+        auditEntity.setUser(userEntity);
+        auditEntity.setDateTime(dateAndTimeGenerator());
+        auditEntity.setStatus(AuditStatus.PENDING);
+        AuditEntity auditId = auditRepository.save(auditEntity);
+        return auditId.getId();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
